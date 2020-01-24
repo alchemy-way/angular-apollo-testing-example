@@ -6,7 +6,7 @@ import {HttpClientTestingModule, HttpTestingController} from '@angular/common/ht
 describe('ExampleService', () => {
   let service: ExampleService;
   let apolloTestingController: ApolloTestingController;
-  let httpTestingController: HttpTestingController
+  let httpTestingController: HttpTestingController;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -45,34 +45,6 @@ describe('ExampleService', () => {
     });
   });
 
-  // When querying via Apollo and an expectation fails
-  // the test *actually passes* and the error is thrown in `afterAll`.
-  // Because of that the error does not show which test should have
-  // failed.
-  //
-  // An error was thrown in afterAll
-  // Error: Expected false to be truthy.
-  //
-  it('should QUERY via APOLLO', () => {
-    service.getCharacterViaApollo().subscribe(hero => {
-      console.log(hero);
-      expect(false).toBeTruthy();
-    });
-
-    const op = apolloTestingController.expectOne(HERO_QUERY);
-
-    expect(op.operation.variables.id).toEqual('1');
-
-    op.flush({
-      data: {
-        hero: {
-          id: '1',
-          name: 'Mr Apollo',
-        },
-      },
-    });
-  });
-
   // When watching a query via Apollo and an expectation fails
   // the test properly fails and the error message indicates which test failed.
   // This is how the HttpClient handles this same situation, so it seems
@@ -105,5 +77,33 @@ describe('ExampleService', () => {
     apolloTestingController.verify();
 
     httpTestingController.verify();
+  });
+
+  // When querying via Apollo and an expectation fails
+  // the test *actually passes* and the error is thrown in `afterAll`.
+  // Because of that the error does not show which test should have
+  // failed.
+  //
+  // An error was thrown in afterAll
+  // Error: Expected false to be truthy.
+  //
+  it('should QUERY via APOLLO', () => {
+    service.getCharacterViaApollo().subscribe(hero => {
+      console.log(hero);
+      expect(false).toBeTruthy();
+    });
+
+    const op = apolloTestingController.expectOne(HERO_QUERY);
+
+    expect(op.operation.variables.id).toEqual('1');
+
+    op.flush({
+      data: {
+        hero: {
+          id: '1',
+          name: 'Mr Apollo',
+        },
+      },
+    });
   });
 });
