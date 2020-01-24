@@ -18,10 +18,6 @@ describe('ExampleService', () => {
     httpTestingController = TestBed.get(HttpTestingController);
   });
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
-
   // When requesting via HttpClient and an expectation fails
   // the test properly fails and the error message indicates which test failed.
   //

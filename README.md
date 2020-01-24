@@ -2,26 +2,31 @@
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.3.19.
 
-## Development server
+## Bug Information
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+Examples and more details can be found in [example.service.spec.ts](src/app/example.service.spec.ts).
 
-## Code scaffolding
+The documentation for testing Apollo states that `ApolloTestingController` works like `HttpTestingController` to test network responses by flushing fake data. This is true, `http.get` and `apollo.watchQuery` work exactly the same. You can test whether the responses are the expected responses without worrying about asynchronous factors, like using `async` or `fakeAsync` or `done`.
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+When using `apollo.query` or `apollo.mutate` it does not seem to work the same way and results in strange behavior when expectations do fail. Tests actually pass when they shouldn't, instead errors are thrown later after all tests are run without signaling what test caused a failure ("An error was thrown in afterAll").
 
-## Build
+![Test Run Results](testResults.png)
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+The issue looks like `apollo.query` and `apollo.mutate` tests need to be handled using asynchronous testing APIs, like `fakeAsync` or `done`.
 
-## Running unit tests
+So is this expected? Why does `apollo.query` and `apollo.mutate` act differently than `http.get` and `apollo.watchQuery` when flushing results?
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+## Reproduce
 
-## Running end-to-end tests
+Run `ng test` () to execute the unit tests via [Karma](https://karma-runner.github.io).
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+All the tests are programmed to fail intentionally with `expect(false).toBeTruthy()` in the subscription callback where the responses are received. Normally that is the place to check whether the data that was flushed is the data that was received like in Angular and Apollo testing documentation.
 
-## Further help
+Result:
+"Chrome 79.0.3945 (Mac OS X 10.15.2): Executed 3 of 3 (2 FAILED) ERROR (0.071 secs / 0.057 secs)"
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+## Resources
+
+https://angular.io/guide/http#expecting-and-answering-requests
+https://www.apollographql.com/docs/angular/guides/testing/
+
