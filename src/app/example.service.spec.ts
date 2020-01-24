@@ -102,4 +102,32 @@ describe('ExampleService', () => {
       },
     });
   });
+
+  // Here is how the `done` API can be used to solve problem.
+  // So why is it necessary to handle async with apollo.query
+  // but not apollo.watchQuery or http.get?
+  //
+  // ExampleService should QUERY via APOLLO FAILED
+  // Error: Expected false to be truthy.
+  //
+  // it('should QUERY via APOLLO', (done) => {
+  //   service.getCharacterViaApollo().subscribe(hero => {
+  //     console.log(hero);
+  //     expect(false).toBeTruthy();
+  //     done();
+  //   });
+  //
+  //   const op = apolloTestingController.expectOne(HERO_QUERY);
+  //
+  //   expect(op.operation.variables.id).toEqual('1');
+  //
+  //   op.flush({
+  //     data: {
+  //       hero: {
+  //         id: '1',
+  //         name: 'Mr Apollo',
+  //       },
+  //     },
+  //   });
+  // });
 });
